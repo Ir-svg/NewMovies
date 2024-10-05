@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Upload &amp; Play App</title>
+    <link rel="stylesheet" href="styles.css">
+<style type="text/css" id="dcoder_stylesheet">body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 2px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.upload-section, .search-section {
+    margin: 20px 0;
+    text-align: center;
+}
+
+#movieList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.movie-item {
+    width: 500px;
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.movie-item img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.movie-item h3 {
+    margin: 10px 0;
+}
+
+.movie-item video {
+    width: 100%;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: black;
+}</style></head>
+<body>
+    <div class="container">
+        <h1>Movie Upload &amp; Play</h1>
+        <button id="homeBtn">Home</button>
+
+        <div class="upload-section">
+            <h2>Upload Movie</h2>
+            <input type="password" id="password" placeholder="Enter password">
+            <input type="text" id="movieTitle" placeholder="Movie Title">
+            <input type="file" id="movieFile" accept="video/*">
+            <input type="file" id="thumbnail" accept="image/*">
+            <button id="uploadBtn">Upload</button>
+        </div>
+
+        <div class="search-section">
+            <input type="text" id="searchBar" placeholder="Search movies">
+            <button id="searchBtn">Search</button>
+        </div>
+
+        <div class="movie-list" id="movieList">
+            <!-- Movie items will be dynamically added here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+<script type="text/javascript" id="dcoder_script">document.getElementById('uploadBtn').addEventListener('click', function () {
+    const password = document.getElementById('password').value;
+    const movieTitle = document.getElementById('movieTitle').value;
+    const movieFile = document.getElementById('movieFile').files[0];
+    const thumbnail = document.getElementById('thumbnail').files[0];
+
+    if (password !== 'Miya bhai 01 mumbai') {
+        alert('Incorrect Password');
+        return;
+    }
+
+    if (!movieTitle || !movieFile || !thumbnail) {
+        alert('Please complete all fields');
+        return;
+    }
+
+    const movieList = document.getElementById('movieList');
+
+    // Create movie item
+    const movieItem = document.createElement('div');
+    movieItem.classList.add('movie-item');
+
+    // Thumbnail
+    const thumbnailImg = document.createElement('img');
+    thumbnailImg.src = URL.createObjectURL(thumbnail);
+    movieItem.appendChild(thumbnailImg);
+
+    // Movie title
+    const movieTitleEl = document.createElement('h3');
+    movieTitleEl.textContent = movieTitle;
+    movieItem.appendChild(movieTitleEl);
+
+    // Video player
+    const videoPlayer = document.createElement('video');
+    videoPlayer.controls = true;
+    videoPlayer.src = URL.createObjectURL(movieFile);
+    movieItem.appendChild(videoPlayer);
+
+    // Like, Comment, Share
+    const likeBtn = document.createElement('button');
+    likeBtn.textContent = 'Like (0)';
+    let liked = false;
+
+    likeBtn.addEventListener('click', function () {
+        if (!liked) {
+            let count = parseInt(likeBtn.textContent.split('(')[1].split(')')[0]);
+            likeBtn.textContent = `Like (${++count})`;
+            liked = true;
+        } else {
+            alert('You can only like once!');
+        }
+    });
+
+    movieItem.appendChild(likeBtn);
+
+    const commentBtn = document.createElement('button');
+    commentBtn.textContent = 'Comment';
+    movieItem.appendChild(commentBtn);
+
+    const shareBtn = document.createElement('button');
+    shareBtn.textContent = 'Share';
+    movieItem.appendChild(shareBtn);
+
+    // Delete Button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.addEventListener('click', function () {
+        const deletePassword = prompt("Enter password to delete this video:");
+
+        if (deletePassword === 'Miya bhai 01 mumbai') {
+            movieList.removeChild(movieItem);
+            alert("Video deleted successfully!");
+        } else {
+            alert("Incorrect password! Video not deleted.");
+        }
+    });
+    movieItem.appendChild(deleteBtn);
+
+    // Prepend new movie item to the list
+    movieList.prepend(movieItem);
+});
+
+document.getElementById('searchBtn').addEventListener('click', function () {
+    const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+    const movies = document.querySelectorAll('.movie-item');
+
+    movies.forEach(movie => {
+        const title = movie.querySelector('h3').textContent.toLowerCase();
+        if (title.includes(searchTerm)) {
+            movie.style.display = 'block';
+        } else {
+            movie.style.display = 'none';
+        }
+    });
+});
+
+document.getElementById('homeBtn').addEventListener('click', function () {
+    document.getElementById('searchBar').value = '';
+    const movies = document.querySelectorAll('.movie-item');
+    movies.forEach(movie => movie.style.display = 'block');
+});
+</script></body></html>
